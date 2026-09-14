@@ -107,7 +107,7 @@ The protocol team subsequently moved approximately $300K in total assets to safe
 - **Aug 18, 2026:** Private advisory submitted to protocol team
 - **Aug 18, 2026:** Protocol team confirmed, began emergency drain
 - **Aug 19, 2026:** Emergency drain completed, all lending positions cleared
-- **Aug 19, 2026:** Public credit in protocol post-mortem
+- **Aug 19, 2026:** Public credit in protocol post-mortem — [protocol team acknowledgment](https://x.com/pikapikasui/status/2089890056890900836)
 
 ---
 
