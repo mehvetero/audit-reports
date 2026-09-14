@@ -15,7 +15,7 @@ No transactions were submitted and no funds were moved during this review.
 Four `public` functions meant for the `sui-prover` formal verification toolchain (`#[spec_only]`) compiled into production bytecode as regular public functions. The `#[spec_only]` attribute is a custom annotation — not a Move language primitive — so the compiler ignores it. These functions take `&mut PositionManager` (a shared object) with zero authorization checks, allowing any address to pull lending assets from any PositionManager.
 
 **Severity:** Critical
-**Outcome:** Protocol team performed an emergency drain of all lending positions (~$300K at risk). Credited publicly in their post-mortem.
+**Outcome:** Protocol team performed an emergency drain of all PositionManager assets (~$300K). Credited publicly in their post-mortem.
 
 ---
 
@@ -95,9 +95,11 @@ This is a vulnerability class, not a one-off bug. Any Sui Move package using cus
 
 ## Exposure at Time of Disclosure
 
-7 out of 9 active PositionManagers held lending positions. Total at risk: approximately $7,200 across Scallop SUI and USDC lending. Balance bags, fee bags, and Cetus DLMM positions were not affected.
+7 out of 9 active PositionManagers held lending positions across Scallop SUI and USDC, totaling approximately $7,200 in directly drainable lending assets via `spec_call_pull_from_*`.
 
-The protocol team subsequently moved approximately $300K in total assets to safety through an emergency drain.
+The total exposure was significantly larger. The `spec_call_add_to_*` injection functions could insert arbitrary lending entries into any PM, causing `user_close_pm` to abort with `ELendingNotEmpty` — effectively freezing all assets in the PM (balance bags, fee bags, and Cetus DLMM positions) until the injected entries are resolved. Total assets across all active PMs: approximately $300K.
+
+The protocol team performed an emergency drain of all PositionManager assets (~$300K) to eliminate both the direct drain and the freeze vector.
 
 ---
 
@@ -113,4 +115,4 @@ The protocol team subsequently moved approximately $300K in total assets to safe
 
 ## Status
 
-**Fixed** — emergency drain removed all lending assets from affected PositionManagers. The underlying package cannot be patched (`only_dep_upgrades`), so the functions still exist in bytecode but there are no longer lending assets to drain. A new package deployment is required for a permanent fix.
+**Fixed** — emergency drain removed all assets (~$300K) from affected PositionManagers, eliminating both the direct lending drain and the PM freeze vector. The underlying package cannot be patched (`only_dep_upgrades`), so the functions still exist in bytecode but there are no longer assets to drain or freeze. A new package deployment is required for a permanent fix.
