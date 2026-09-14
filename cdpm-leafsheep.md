@@ -95,11 +95,9 @@ This is a vulnerability class, not a one-off bug. Any Sui Move package using cus
 
 ## Exposure at Time of Disclosure
 
-7 out of 9 active PositionManagers held lending positions across Scallop SUI and USDC, totaling approximately $7,200 in directly drainable lending assets via `spec_call_pull_from_*`.
+All active PositionManagers were vulnerable — any address could drain lending assets from any PM via `spec_call_pull_from_*` with zero authorization. Total assets at risk across all PMs: approximately $300K.
 
-The total exposure was significantly larger. The `spec_call_add_to_*` injection functions could insert arbitrary lending entries into any PM, causing `user_close_pm` to abort with `ELendingNotEmpty` — effectively freezing all assets in the PM (balance bags, fee bags, and Cetus DLMM positions) until the injected entries are resolved. Total assets across all active PMs: approximately $300K.
-
-The protocol team performed an emergency drain of all PositionManager assets (~$300K) to eliminate both the direct drain and the freeze vector.
+The protocol team performed an emergency drain of all PositionManager assets (~$300K) immediately after disclosure.
 
 ---
 
