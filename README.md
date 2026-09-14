@@ -7,3 +7,4 @@ Each file is a standalone report with scope, method, findings, and status.
 | Protocol | Date | Chain | Findings | Status |
 |----------|------|-------|----------|--------|
 | [CDPM / LeafSheep](cdpm-leafsheep.md) | Aug 2026 | Sui | 1 Critical | Fixed (emergency drain, credited) |
+| [Kriya DEX](kriya-dex.md) | Jul 2026 | Sui | 1H + 1H(trust) + 3L + 1I | Unresponded |
