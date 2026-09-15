@@ -5,7 +5,7 @@
 **Platform:** [CodeHawks](https://codehawks.cyfrin.io/c/2026-07-battlechain-confidence-pools) (Cyfrin)
 **Contest:** Jul 9–16, 2026 | 589 nSLOC | 7.25 ETH prize pool
 **Method:** Manual review + Foundry PoC
-**Result:** 1 validated finding (LOW), 1.25 ETH reward
+**Result:** 1 validated finding (LOW)
 
 ---
 
