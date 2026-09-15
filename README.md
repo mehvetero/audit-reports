@@ -8,3 +8,4 @@ Each file is a standalone report with scope, method, findings, and status.
 |----------|------|-------|----------|--------|
 | [CDPM / LeafSheep](cdpm-leafsheep.md) | Aug 2026 | Sui | 1 Critical | Fixed (emergency drain, credited) |
 | [Kriya DEX](kriya-dex.md) | Jul 2026 | Sui | 1H + 1H(trust) + 3L + 1I | Unresponded |
+| [SuiDouBashi AMM](suidoubashi-amm.md) | Aug 2026 | Sui | 1H + 1M + 2L + 2I | Delivered (protocol inactive) |
