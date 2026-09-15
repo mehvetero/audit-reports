@@ -76,18 +76,34 @@ Copy-paste from the first branch where `coin_y` was changed to `coin_x` but `opt
 **Where:** `pool.move` L302-304
 
 ```move
-value * (fee_percentage as u64) / FEE_SCALING + 1
+public fun calculate_fee(value: u64, fee_percentage: u8): u64{
+    value * (fee_percentage as u64) / FEE_SCALING + 1
+}
 ```
 
-Unconditional `+1` means a swap of 1 unit pays 100% fee. Standard fix: ceiling division `(value * fee + FEE_SCALING - 1) / FEE_SCALING`.
+The unconditional `+1` is meant as rounding-up, but it applies even when the division is exact. A swap of 1 unit with fee_percentage=10 (0.1%) pays fee = 0 + 1 = 1, which is 100% of the input. Every trade overpays by 1 unit regardless of size. Swap entry points require `value > 0`, so the zero case doesn't hit in practice, but the public view functions `get_output` and `get_output_fee` don't enforce this — off-chain consumers querying with value=0 get misleading results.
+
+**Fix:** Standard ceiling division: `(value * (fee_percentage as u64) + FEE_SCALING - 1) / FEE_SCALING`.
 
 ---
 
-### F-04 — Oracle observations grow without bound
+### F-04 — Oracle observation array grows without bound
 
 **Where:** `pool.move` L922-929
 
-A new `Observation` is appended every 30 minutes but never pruned. ~17,520 entries per year. Sui storage costs grow linearly and are borne by every swapper.
+```move
+if( elapsed > PERIOD_SIZE ){
+    table_vec::push_back(&mut self.observations, Observation{
+        timestamp: ts,
+        reserve_x_cumulative: self.last_price_x_cumulative,
+        reserve_y_cumulative: self.last_price_y_cumulative,
+    })
+};
+```
+
+A new `Observation` is appended every 30 minutes (`PERIOD_SIZE = 1800`) but never pruned. One year of continuous activity accumulates ~17,520 entries. The `smaple` function (L1020) indexes from the tail so query performance is fine, but on Sui every `TableVec` entry is a separate object — storage costs grow linearly and are borne by whoever triggers `update_timestamp_` (every swapper and LP). Velodrome L1 (the upstream design) also lacks pruning, but Ethereum's storage model charges differently.
+
+**Fix:** Fixed-size ring buffer, or prune entries older than a window (e.g. 7 days = 336 observations).
 
 ---
 
@@ -95,13 +111,29 @@ A new `Observation` is appended every 30 minutes but never pruned. ~17,520 entri
 
 **Where:** `pool_reg.move` L18-19
 
-`ERR_INVALD_FEE` and `ERR_INVALD_PAIR` both equal 0. Impossible to distinguish which validation failed from the abort code alone.
+```move
+const ERR_INVALD_FEE: u64 = 0;
+const ERR_INVALD_PAIR: u64 = 0;
+```
+
+Both constants share value `0`. When a transaction aborts with code 0 in the `pool_reg` module, there's no way to tell whether the fee was invalid or the pair was invalid without reading the call stack. The pool module has a similar issue with `E_EMPTY_INPUT` (code 102) reused across 5 abort sites, but those are in separate functions so the module+function metadata partially disambiguates.
 
 ---
 
-### F-06 — Typos in public identifiers
+### F-06 — Typos in public API identifiers
 
-9 typos including function name `smaple` (should be `sample`), `udpate_lock`, `earneed_times`, `E_INSIFFICIENT_INPUT`, `withdrawl` (×6).
+**Where:** `pool.move`, `pool_reg.move`
+
+| Location | Current | Should be |
+|----------|---------|-----------|
+| pool.move L103 | `E_INSIFFICIENT_INPUT` | `E_INSUFFICIENT_INPUT` |
+| pool.move L129 | `udpate_lock` | `update_lock` |
+| pool.move L149 | `earneed_times` | `earned_times` |
+| pool.move L395+ | `withdrawl` (×6) | `withdrawal` |
+| pool.move L1017 | `smaple` (function name) | `sample` |
+| pool_reg.move L18-19 | `ERR_INVALD_FEE/PAIR` | `ERR_INVALID_FEE/PAIR` |
+
+The function name `smaple` and `udpate_lock` are callable identifiers — renaming them is a breaking change if any downstream module references them by name.
 
 ---
 

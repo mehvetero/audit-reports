@@ -1,8 +1,6 @@
 # Audit Reports
 
-Independent security reviews of smart contracts and DeFi protocols. Findings from source reviews, bytecode disassembly, and competitive audits.
-
-Each file is a standalone report with scope, method, findings, and status.
+Security reviews I've done on DeFi protocols and smart contracts — bytecode disassembly, source review, and one competitive audit. Each report is self-contained.
 
 | Protocol | Date | Chain | Findings | Status |
 |----------|------|-------|----------|--------|

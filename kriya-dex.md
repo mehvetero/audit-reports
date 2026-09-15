@@ -2,9 +2,11 @@
 
 **Date:** July 2026
 **Chain:** Sui (Move)
-**Packages:** CLMM (`0xf6c05e2d...`), Spot DEX (`0xa0eba10b...`)
+**Packages:** CLMM (`0xf6c05e2d...`), Spot DEX (`0xa0eba10b173538c8fecca1dff298e488402cc9ff374f8a12ca7758eebe830b66`)
 **Method:** On-chain bytecode disassembly + dry-run validation + numerical simulation
-**Disclosure:** Public (no private reporting channel available, no SECURITY.md)
+**Disclosure:** [Public Issue](https://github.com/efficacy-finance/kriya-dex-interface/issues/2) (no SECURITY.md, no private reporting channel)
+
+CLMM full address unavailable — Kriya docs site is dead and the chain indexers I had access to at the time returned the prefix only. The Spot DEX address above is confirmed via [DefiLlama adapter PR #9212](https://github.com/DefiLlama/dimension-adapters/pull/9212).
 
 No transactions were submitted. All verification used read-only RPC queries and `sui client ptb --dry-run`.
 
@@ -109,4 +111,4 @@ No whitelist or admin check on pool creation. Anyone can create pools with any t
 
 ## Status
 
-**Unresponded.** Issue filed at `efficacy-finance/kriya-dex-interface#2`. No reply from protocol team as of September 2026.
+**Unresponded.** [Issue #2](https://github.com/efficacy-finance/kriya-dex-interface/issues/2) filed on `efficacy-finance/kriya-dex-interface`. No reply from protocol team as of September 2026.
